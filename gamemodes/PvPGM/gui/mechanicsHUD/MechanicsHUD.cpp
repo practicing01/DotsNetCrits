@@ -34,6 +34,9 @@ MechanicsHUD::MechanicsHUD(Context* context, Urho3DPlayer* main, GameMode* gameM
 	main_ = main;
 	gameMode_ = gameMode;
 	playerSelf_ = playerSelf;
+	previousExtents_ = IntVector2(800, 480);
+
+	SubscribeToEvent(E_RESIZED, HANDLER(MechanicsHUD, HandleElementResize));
 
 	mechanicsHUD_ = main_->ui_->LoadLayout(main_->cache_->GetResource<XMLFile>("UI/mechanicsHUD.xml"));
     main_->ui_->GetRoot()->AddChild(mechanicsHUD_);
@@ -78,3 +81,26 @@ void MechanicsHUD::HandleRelease(StringHash eventType, VariantMap& eventData)
 		}
 	}
 }
+
+void MechanicsHUD::HandleElementResize(StringHash eventType, VariantMap& eventData)
+{
+	using namespace Resized;
+
+	UIElement* ele = static_cast<UIElement*>(eventData[ElementAdded::P_ELEMENT].GetPtr());
+
+	IntVector2 rootExtent = main_->ui_->GetRoot()->GetSize();
+
+	IntVector2 scaledExtent;
+
+	scaledExtent.x_ = ( ele->GetWidth() *  rootExtent.x_ ) / previousExtents_.x_;
+	scaledExtent.y_ = ( ele->GetHeight() *  rootExtent.y_ ) / previousExtents_.y_;
+
+	ele->SetSize(scaledExtent);
+
+	IntVector2 scaledPosition = IntVector2(
+			( ele->GetPosition().x_ *  rootExtent.x_ ) / previousExtents_.x_,
+			( ele->GetPosition().y_ *  rootExtent.y_ ) / previousExtents_.y_);
+
+	ele->SetPosition(scaledPosition);
+}
+

@@ -24,6 +24,7 @@ public:
 
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 	void HandleRelease(StringHash eventType, VariantMap& eventData);
+	void HandleElementResize(StringHash eventType, VariantMap& eventData);
 
 	Urho3DPlayer* main_;
 	GameMode* gameMode_;
@@ -32,4 +33,6 @@ public:
 	SharedPtr<UIElement> mechanicsHUD_;
 
 	PlayerSB* playerSelf_;
+
+	IntVector2 previousExtents_;
 };

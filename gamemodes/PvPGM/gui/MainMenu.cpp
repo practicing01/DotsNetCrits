@@ -35,6 +35,10 @@ MainMenu::MainMenu(Context* context, Urho3DPlayer* main, GameMode* gameMode) :
 	main_ = main;
 	gameMode_ = gameMode;
 
+	previousExtents_ = IntVector2(800, 480);
+
+	SubscribeToEvent(E_RESIZED, HANDLER(MainMenu, HandleElementResize));
+
 	LogOutMenu* logoutmMenu = new LogOutMenu(context_, main_, gameMode_);
 
 	menuItems_.Push((MenuItem*)logoutmMenu);
@@ -112,4 +116,29 @@ void MainMenu::HandleMenuItemExec(StringHash eventType, VariantMap& eventData)
 	//UIElement* ele = static_cast<UIElement*>(eventData[Released::P_ELEMENT].GetPtr());
 
 	menuItems_[menuItemIndex_]->Execute();
+}
+
+void MainMenu::HandleElementResize(StringHash eventType, VariantMap& eventData)
+{
+	using namespace Resized;
+
+	UIElement* ele = static_cast<UIElement*>(eventData[ElementAdded::P_ELEMENT].GetPtr());
+
+	if (ele->GetName() != "" && ele->GetName() != "mechanicButt")
+	{
+		IntVector2 rootExtent = main_->ui_->GetRoot()->GetSize();
+
+		IntVector2 scaledExtent;
+
+		scaledExtent.x_ = ( ele->GetWidth() *  rootExtent.x_ ) / previousExtents_.x_;
+		scaledExtent.y_ = ( ele->GetHeight() *  rootExtent.y_ ) / previousExtents_.y_;
+
+		ele->SetSize(scaledExtent);
+
+		IntVector2 scaledPosition = IntVector2(
+				( ele->GetPosition().x_ *  rootExtent.x_ ) / previousExtents_.x_,
+				( ele->GetPosition().y_ *  rootExtent.y_ ) / previousExtents_.y_);
+
+		ele->SetPosition(scaledPosition);
+	}
 }

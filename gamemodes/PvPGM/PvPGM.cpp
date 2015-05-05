@@ -510,13 +510,13 @@ void PvPGM::TouchUp(StringHash eventType, VariantMap& eventData)
 
 	PlayerSB* self = GetPlayerSelf();
 	msg_.Clear();
-	msg_.WriteInt(PvPGM::MSG_RequestMechanicExecute_);
-	msg_.WriteString("SceneObjectMoveToWithCollision");
+	msg_.WriteInt(PvPGM::MSG_RequestMechanicExecute_);//todo clientside prediction by using ClientRequestExecute
+	msg_.WriteString("SceneObjectMoveToWithCollision");//todo send starting pos too?
 	msg_.WriteVector3(victoria_);
 	int finalSpeed = self->player_->GetComponent<Speed>()->speed_;
 	if (self->player_->GetComponent<Sprint>()->Sprinted_)
 	{
-		finalSpeed += self->player_->GetComponent<Sprint>()->sprint_;
+		finalSpeed += self->player_->GetComponent<Sprint>()->sprint_;//todo shouldn't be doing this cus it can change
 	}
 	if (self->player_->GetComponent<Snare>()->Snared_)
 	{
@@ -536,7 +536,7 @@ void PvPGM::TouchUp(StringHash eventType, VariantMap& eventData)
 	//self->RecursiveSetAnimation(self->player_, "run", true, 0);
 
 	msg_.Clear();
-	msg_.WriteInt(PvPGM::MSG_RequestMechanicExecute_);
+	msg_.WriteInt(PvPGM::MSG_RequestMechanicExecute_);//todo clientside prediction by using ClientRequestExecute
 	msg_.WriteString("SceneObjectRotateTo");
 	msg_.WriteQuaternion(quarterPounder_);
 	msg_.WriteFloat(self->player_->GetComponent<RotSpeed>()->rotSpeed_);

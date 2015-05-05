@@ -38,6 +38,10 @@ NetworkMenu::NetworkMenu(Context* context, Urho3DPlayer* main) :
 	main_ = main;
 	elapsedTime_ = 0.0f;
 
+	previousExtents_ = IntVector2(800, 480);
+
+	SubscribeToEvent(E_RESIZED, HANDLER(NetworkMenu, HandleElementResize));
+
 	main_->cameraNode_->RemoveAllChildren();
 	main_->cameraNode_->RemoveAllComponents();
 	main_->cameraNode_->Remove();
@@ -144,4 +148,26 @@ void NetworkMenu::HandleTextFinished(StringHash eventType, VariantMap& eventData
 
 	ipAddress_ = eventData[P_TEXT].GetString();
 
+}
+
+void NetworkMenu::HandleElementResize(StringHash eventType, VariantMap& eventData)
+{
+	using namespace Resized;
+
+	UIElement* ele = static_cast<UIElement*>(eventData[ElementAdded::P_ELEMENT].GetPtr());
+
+	IntVector2 rootExtent = main_->ui_->GetRoot()->GetSize();
+
+	IntVector2 scaledExtent;
+
+	scaledExtent.x_ = ( ele->GetWidth() *  rootExtent.x_ ) / previousExtents_.x_;
+	scaledExtent.y_ = ( ele->GetHeight() *  rootExtent.y_ ) / previousExtents_.y_;
+
+	ele->SetSize(scaledExtent);
+
+	IntVector2 scaledPosition = IntVector2(
+			( ele->GetPosition().x_ *  rootExtent.x_ ) / previousExtents_.x_,
+			( ele->GetPosition().y_ *  rootExtent.y_ ) / previousExtents_.y_);
+
+	ele->SetPosition(scaledPosition);
 }

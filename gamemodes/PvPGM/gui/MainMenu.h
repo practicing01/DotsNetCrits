@@ -27,6 +27,7 @@ public:
 	void HandleMenuToggle(StringHash eventType, VariantMap& eventData);
 	void HandleMenuItemExec(StringHash eventType, VariantMap& eventData);
 	void SetMenuItemImage();
+	void HandleElementResize(StringHash eventType, VariantMap& eventData);
 
 	Urho3DPlayer* main_;
 	GameMode* gameMode_;
@@ -38,4 +39,6 @@ public:
 	Vector<MenuItem*> menuItems_;
 
 	int menuItemIndex_;
+
+	IntVector2 previousExtents_;
 };

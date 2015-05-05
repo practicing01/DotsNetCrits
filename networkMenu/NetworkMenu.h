@@ -24,9 +24,12 @@ public:
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 	void TouchDown(StringHash eventType, VariantMap& eventData);
 	void HandleTextFinished(StringHash eventType, VariantMap& eventData);
+	void HandleElementResize(StringHash eventType, VariantMap& eventData);
 
 	Urho3DPlayer* main_;
 	float elapsedTime_;
 
 	String ipAddress_;
+
+	IntVector2 previousExtents_;
 };
